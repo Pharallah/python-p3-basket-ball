@@ -1,3 +1,5 @@
+import ipdb
+
 def game_dict():
     return {
         "home": {
@@ -182,3 +184,118 @@ def game_dict():
             ]
         }
     }
+
+######### HELPER FUNCTIONS ###########
+
+def get_all_players():
+    home_team = game_dict()['home']['players']
+    away_team = game_dict()['away']['players']
+    all_players = home_team + away_team
+    return all_players
+
+def get_both_teams():
+    home_team = [game_dict()['home']]
+    away_team = [game_dict()['away']]
+    both_teams = home_team + away_team
+    return both_teams
+
+##########################################
+
+def num_points_per_game(name):
+    for player in get_all_players():
+        if player['name'] == name:
+            return player['points_per_game'] 
+
+def player_age(name):
+    for player in get_all_players():
+        if player['name'] == name:
+            return player['age']
+            
+def team_colors(team_name):
+    # CLASSIC FOR LOOP VERSION
+    for team in get_both_teams():
+        if team['team_name'] == team_name:
+            return team["colors"]
+    
+    # LIST EXPRESSION VERSION
+    # return [color for team in get_both_teams() if team["team_name"] == team_name for color in team["colors"]]
+
+def team_names():
+    # CLASSIC FOR LOOP VERSION
+    teams = []
+    for home_or_away in game_dict():
+        for info in game_dict()[home_or_away]:
+            if info == "team_name":
+                teams.append(game_dict()[home_or_away][info])
+    return teams
+
+ # LIST EXPRESSION VERSION
+    # return [game_dict()[home_or_away][info] for home_or_away in game_dict() for info in game_dict()[home_or_away] if info == "team_name"]
+
+
+def player_numbers(team_name):
+    numbers = []
+    for team in game_dict():
+        home_or_away = game_dict()[team]
+        for info in home_or_away:
+            current_team_name = game_dict()[team][info]
+            if current_team_name == team_name:
+                list_of_players = game_dict()[team]["players"]
+                for player in list_of_players:
+                    numbers.append(player["number"])
+    return numbers
+
+
+def player_stats(player_name):
+    stats = {}
+    for team in game_dict():
+        home_or_away = game_dict()[team]
+        for info in home_or_away:
+            if info == "players":
+                current_team_players = game_dict()[team][info]
+                for player in current_team_players:
+                    if player["name"] == player_name:
+                        stats.update(player)
+    return stats
+
+
+########CHALLENGE#########
+
+
+def average_rebounds_by_shoe_brand():
+    average_rebounds_by_brand = {}
+    
+    # Populate average_rebounds_by_brand
+    for team in game_dict():
+        home_or_away = game_dict()[team]
+        for info in home_or_away:
+            if info == "players":
+                current_team_players = game_dict()[team][info]
+                for player in current_team_players:
+                    brand = player["shoe_brand"]
+                    rebounds = player["rebounds_per_game"]
+                    if brand not in average_rebounds_by_brand:
+                        average_rebounds_by_brand[brand] = [rebounds]
+                    else:
+                        average_rebounds_by_brand[brand].append(rebounds)          
+    
+    #Initialize Rounded version of average_rebounds_by_brand
+    rounded_average_rebounds_by_brand = {}
+
+    # Iterate through average_rebounds_by_brand
+    for brand in average_rebounds_by_brand:
+        list_of_rebounds = average_rebounds_by_brand[brand]
+        sum_of_rebounds = sum(list_of_rebounds) # Sum the list up
+        average_rebounds = sum_of_rebounds / len(list_of_rebounds) # Calculate average of list
+        rounded_average_rebounds = round(average_rebounds, 2) # Round to two decimal places
+        rounded_average_rebounds_by_brand[brand] = rounded_average_rebounds 
+
+    # Update average_rebounds_by_brand
+    average_rebounds_by_brand.update(rounded_average_rebounds_by_brand)     
+
+    # Convert average_rebounds_by_brand to String
+    to_string = "\n".join(f"{key}:  {value:.2f}" for key, value in average_rebounds_by_brand.items())
+    
+    return to_string       
+
+print(average_rebounds_by_shoe_brand())
