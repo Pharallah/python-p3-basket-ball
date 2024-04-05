@@ -299,6 +299,7 @@ def player_stats(player_name):
 #     ipdb.set_trace()
 #     print(to_string)
 
+# NANCY'S REFACTORED VERSION
 def average_rebounds_by_shoe_brand():
     players = [player for team in game_dict().values() for player in team['players']]
     average_rebounds_by_brand = {player['shoe_brand']: [] for team in game_dict().values() for player in team["players"]}
